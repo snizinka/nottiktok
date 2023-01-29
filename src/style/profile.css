@@ -1,0 +1,14 @@
+.solo {
+    margin-left: 62px !important;
+    background: red;
+}
+
+.recov {
+    left: 50% !important;
+    transition: .7s ease !important;
+}
+
+.move {
+    left: 100vw !important;
+    transition: .7s ease !important;
+}

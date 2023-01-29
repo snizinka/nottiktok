@@ -1,0 +1,166 @@
+.wrapper {
+    margin: auto;
+    height: 650px;
+    width: 1400px;
+    background: #BDBDBD;
+    box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    /* display: flex;
+    flex-direction: column;
+    justify-content: center; */
+    position: relative;
+}
+
+.container {
+    width: 1200px;
+    margin: auto;
+}
+
+.layout_title {
+    display: flex;
+}
+
+.title {
+    font-size: 30px;
+    font-family: 'Signika Negative', sans-serif;
+    color: white;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.text_container {
+    width: 400px;
+    margin: auto
+}
+
+.txt_container {
+    width: 400px;
+    margin: auto;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.top_part {
+    /* height: 350px; */
+    padding: 10px 0;
+    width: 500px;
+    border-radius: 10px;
+    background: #D9D9D9;
+    margin-bottom: 40px;
+}
+
+.left_column {
+    margin-top: 80px;
+}
+
+.bottom_part {
+    height: 120px;
+    width: 500px;
+    border-radius: 10px;
+    background: #D9D9D9;
+}
+
+
+.search {
+    margin-right: 210px;
+    width: 290px;
+    margin: auto;
+    height: 180px
+}
+
+/* .search h1 {
+    font-size: 30px;
+    font-family: 'Signika Negative', sans-serif;
+    color: white;
+    margin-bottom: 10px;
+} */
+
+.search input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: 'Signika Negative', sans-serif;
+    margin-bottom: 10px;
+}
+
+.posts {
+    width: 290px;
+    max-height: 295px;
+    overflow: auto;
+}
+
+.text_container p, .txt_container p {
+    font-size: 20px;
+    font-family: 'Signika Negative', sans-serif;
+    display: flex;
+}
+
+.text_container p + p {
+    margin-top: 15px;
+}
+
+.month {
+    color: royalblue;
+    cursor: pointer;
+    margin-right: 3px;
+}
+
+.add {
+    height: 15px;
+    width: 15px;
+    border-radius: 200%;
+    border: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-family: 'Signika Negative', sans-serif;
+    color: royalblue;
+}
+
+.menu_item {
+    margin-bottom: 10px;
+    border: solid #D9D9D9 2px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.menu_item p {
+    font-family: 'Signika Negative', sans-serif;
+    font-size: 15px;
+    padding: 4px;
+}
+
+.title_select {
+    display: flex;
+    height: 37px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.title_select h1 {
+    font-size: 30px;
+    font-family: 'Signika Negative', sans-serif;
+    color: #fff;
+    margin-right: 5px;
+}
+
+.title_select button {
+    height: 30px;
+    width: 30px;
+    border-radius: 100%;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    font-family: 'Signika Negative', sans-serif;
+    cursor: pointer;
+    transition: .7s ease;
+}

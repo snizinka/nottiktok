@@ -1,0 +1,371 @@
+.posts_wrapper {
+    margin: auto;
+    height: 650px;
+    width: 1400px;
+    background: #BDBDBD;
+    box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.posts_container {
+    overflow-y: auto;
+    height: 570px;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    margin: auto;
+    width: calc(100% - 10px);
+}
+
+/* .posts_container::-webkit-scrollbar { 
+    display: none;      
+} */
+
+.posts_container::-webkit-scrollbar {
+    width: 7px;
+  }
+
+.posts_container::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+  }
+
+.posts_container::-webkit-scrollbar-thumb {
+    background: #A8A8A8;
+    border-radius: 10px;
+    height: 50%;
+  }
+
+  .posts_container::-webkit-scrollbar-thumb:hover {
+    background: #888;
+    cursor: pointer;
+  }
+
+.post {
+    scroll-snap-align: start;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.left_part {
+    margin-left: 50px;
+    width: 310px;
+}
+
+.icon {
+    height: 120px;
+    width: 120px;
+    background: #D9D9D9;
+    border-radius: 100%;
+}
+
+.follow_user {
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.follow {
+    font-family: 'Signika Negative', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 10px 0px;
+    width: 150px;
+    margin-top: auto;
+    margin-bottom: 20px;
+    background: #D9D9D9;
+    border: none;
+    cursor: pointer;
+}
+
+.info_top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+.username {
+    font-family: 'Signika Negative', sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 25px;
+    color: #FFFFFF;
+    margin-right: auto;
+}
+
+.desctiption {
+    height: 260px;
+    width: 100%;
+    background: #D9D9D9;
+    margin-bottom: 35px;
+    border-radius: 10px;
+}
+
+.desctiption_container {
+    width: 95%;
+    margin: auto;
+}
+
+.category {
+    width: 100%;
+    max-height: 60px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: flex;
+    padding-top: 10px;
+}
+
+.category a {
+    font-family: 'Signika Negative', sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    color: #FFFFFF;
+}
+
+.category a + a {
+    margin-left: 10px;
+}
+
+.description_text {
+    padding-top: 20px;
+    height: 195px;
+    overflow: hidden;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.description_text p {
+    font-family: 'Signika Negative', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 19px;
+    color: black;
+}
+
+
+
+
+
+
+.middle_part {
+    width: 550px;
+    background: #D9D9D9;
+    border-radius: 10px;
+    height: 570px;
+    display: flex;
+}
+
+
+
+
+
+
+.right_part {
+    width: 320px;
+    margin-right: 50px;
+}
+
+.comment_section {
+    width: 100%;
+    height: 430px;
+    background: #D9D9D9;
+    border-radius: 10px;
+    margin-bottom: 30px
+}
+
+.comment_p {
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center;
+    color: #FFFFFF;
+    padding: 10px 0;
+    font-family: 'Signika Negative', sans-serif;
+}
+
+.actions {
+    width: 100%;
+    padding: 30px 0;
+    background: #D9D9D9;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-around;
+    margin-top: auto;
+}
+
+.item {
+    height: 47.5px;
+    width: 47.5px;
+    border-radius: 100%;
+    background: #BDBDBD;
+}
+
+.item button {
+    height: 100%;
+    width: 100%;
+    border-radius: 100%;
+    border: none;
+    font-size: 9px;
+    cursor: pointer;
+    font-family: 'Signika Negative', sans-serif;
+}
+
+.image {
+    height: 95%;
+    width: 95%;
+    border-radius: 95%;
+    object-fit: cover;
+    margin-left: 2.5%;
+    margin-top: 2.5%;
+}
+
+.middle_wrapper {
+    width: 400px;
+    height: 100%;
+    margin: auto;
+    overflow: hidden;
+}
+
+.middle_container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    gap: 20px;
+}
+
+.slider_img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.slider_item {
+    width: 100%;
+    height: 100%;
+}
+
+.left_swtch, .right_switch {
+    width: 75px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left_swtch button, .right_switch button {
+    height: 60px;
+    width: 60px;
+    border-radius: 100%;
+    cursor: pointer;
+    background: #BDBDBD;
+    border: solid #BB8C7A 2px;
+    color: #FFFFFF;
+    font-family: 'Signika Negative', sans-serif;
+}
+
+.post_info {
+    width: 100%;
+    height: 110px;
+    background: #D9D9D9;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.post_info p {
+    font-family: 'Signika Negative', sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #9A86A4;
+    padding-left: 30px;
+}
+
+.comment {
+    max-width: 80%;
+    padding: 10px 20px;
+    border-radius: 10px;
+    background: #BDBDBD;
+    margin: auto;
+}
+
+.comment + .comment {
+    margin-top: 10px;
+}
+
+.comment_content {
+    display: flex;
+}
+
+.comment_content img {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.comment_content p {
+    max-width: 80%;
+    font-family: 'Signika Negative', sans-serif;
+    font-size: 14px;
+}
+
+.user_sign p {
+    font-family: 'Signika Negative', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.comments {
+    height: 295px;
+    overflow-y: auto;
+}
+
+.add_comment_fld {
+    width: 90%;
+    height: 80px;
+    border-radius: 10px;
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.add_comment_fld input {
+    font-family: 'Signika Negative', sans-serif;
+    font-size: 14px;
+    width: 66%;
+    padding: 0 2%;
+    margin-right: 5%;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+}
+
+.add_comment_fld button {
+    width: 25%;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Signika Negative', sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.text_component {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.text_component p {
+    font-size: 17px;
+    width: 400px;
+}
