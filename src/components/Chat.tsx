@@ -56,9 +56,10 @@ const Chat = () => {
             await sendMsg(receiver, message)
         else if (messageMode === MessageMode.EDIT) {
             const messageData = {
-                room: selectedRoom,
+                room: selectedRoom.contact.contactId,
                 messageId: messageToEdit.messageId,
-                message: message
+                message: message,
+                chatType: selectedRoom.chatType
             }
             console.log(messageToEdit)
             await sockett.emit('edit_message', messageData)
@@ -69,7 +70,7 @@ const Chat = () => {
     }
 
     const removeMessage = useCallback(async (messageData) => {
-        await sockett.emit('delete_message', { room: selectedRoom, messageId: messageData })
+        await sockett.emit('delete_message', { room: selectedRoom, messageId: messageData, chatType: selectedRoom.chatType })
     })
 
     const changeMessageToEdit = useCallback((messageToEdi) => {
@@ -86,11 +87,12 @@ const Chat = () => {
 
     async function sendMsg(receiver, message) {
         const messageData = {
-            room: selectedRoom,
+            room: selectedRoom.contact.contactId,
             author: user[0].userId,
             receiver: receiver,
             message: message,
-            time: new Date(Date.now())
+            time: new Date(Date.now()),
+            chatType: selectedRoom.chatType
         }
 
         await sockett.emit('send_message', messageData)
@@ -113,6 +115,7 @@ const Chat = () => {
         })
 
         sockett.on('deleted_message', (data) => {
+            console.log(data)
             deleteMessage(data)
         })
     }, [sockett])
@@ -130,39 +133,44 @@ const Chat = () => {
                             setSearchValue(e.target.value)
                         }} />
                         <button className='add-btn' onClick={() => {
-                            searchContact(searchValue)
+                            searchContact(user[0].userId, searchValue)
                         }}>Add</button>
                     </div>
 
                     {
                         contact.length > 0 ? <div className="search-contact-list">
-                        {
-                            contact.map(c => {
-                                return <div className="searched-contact">
-                                    <img src={require(`../post_content/pictures/${c.userImage}`)} alt={c.userLink} />
-                                    <a href="#">{c.userLink}</a>
-                                    <div className="selected-contact">
-                                        <button className="sub-contact" onClick={() => {
-                                            handleFollows(c.userId, user[0].userId)
-                                            createContact(c.userId, user[0].userId, c)
-                                            console.log(c.userId, user[0].userId)
-                                        }}>Add</button>
+                            {
+                                contact.map(c => {
+                                    return <div className="searched-contact">
+                                        <img src={require(`../post_content/pictures/${c.userImage}`)} alt={c.userLink} />
+                                        <a href="#">{c.userLink}</a>
+                                        <div className="selected-contact">
+                                            <button className="sub-contact" onClick={() => {
+                                                handleFollows(c.userId, user[0].userId)
+                                                createContact(c.userId, user[0].userId, c)
+                                                console.log(c.userId, user[0].userId)
+                                            }}>Add</button>
+                                        </div>
                                     </div>
-                                </div>
-                            })
-                        }
-                    </div> : ''
+                                })
+                            }
+                        </div> : ''
                     }
 
-                    
 
-                    <div className="contacts">
+
+                    <div className="contacts"
+                    style={{ maxHeight: contact.length > 0 ? '250px' : '' }}>
                         {
                             contacts.map((contact: any, index: any) => {
                                 return <div style={{ border: selectedRoom === contact.contact.contactId ? 'solid #FFF9D7 3px' : 'none' }} className='contact' key={index} onClick={() => {
-                                    setSelectedRoom(contact.contact.contactId)
+                                    setSelectedRoom(contact)
                                     setSelectedChatUser(contact.user)
-                                    fetchChatMessages(user[0].userId, contact.contact.fuserId === user[0].userId ? contact.contact.suserId : contact.contact.fuserId)
+                                    if (contact.chatType === 'PRIVATE') {
+                                        fetchChatMessages(user[0].userId, contact.contact.fuserId === user[0].userId ? contact.contact.suserId : contact.contact.fuserId, 'PRIVATE')
+                                    } else {
+                                        fetchChatMessages(user[0].userId, contact.contact.contactId, 'GROUP')
+                                    }
                                     sockett.emit('join_room', contact.contact.contactId)
                                 }}>
                                     {
@@ -199,17 +207,42 @@ const Chat = () => {
                                             }}>
                                             <div className='message' style={{ borderColor: messageMode === MessageMode.EDIT && messageToEdit.messageId === message.messageId ? '#6C7FC5' : 'transparent' }}>
                                                 {
-                                                    message.authorId !== user[0].userId ?
-                                                        <img style={{ marginRight: '7px' }} className='message_author_img' src={require(`../post_content/pictures/${message.author === user[0].userId ? user[0].userImage : selectedChatUser.userImage}`)} alt="" />
-                                                        : ''
+                                                    selectedRoom.chatType === 'GROUP' ? message.authorId !== user[0].userId ?
+                                                        selectedChatUser.map(scu => {
+                                                            if (scu.userId === message.authorId) {
+                                                                return <img style={{ marginRight: '7px' }}
+                                                                    className='message_author_img'
+                                                                    src={require(`../post_content/pictures/${scu.userImage}`)}
+                                                                    alt="" />
+                                                            }
+                                                        }) : '' : ''
+                                                }
+                                                {
+                                                    selectedRoom.chatType === 'PRIVATE' ? message.authorId !== user[0].userId ?
+                                                        <img style={{ marginRight: '7px' }}
+                                                            className='message_author_img'
+                                                            src={require(`../post_content/pictures/${selectedChatUser.userImage}`)}
+                                                            alt="" />
+                                                        : '' : ''
                                                 }
                                                 <div style={{ marginRight: message.authorId === user[0].userId ? '7px' : '0px' }} >
-                                                    <p className='message_author' style={{ textAlign: message.authorId === user[0].userId ? 'end' : 'initial' }}>{message.authorId === user[0].userId ? user[0].username : selectedChatUser.username}</p>
+                                                    <p className='message_author' style={{ textAlign: message.authorId === user[0].userId ? 'end' : 'initial' }}>
+                                                        {
+                                                            selectedRoom.chatType === 'GROUP' ? (message.authorId === user[0].userId) ? (user[0].username) : (selectedChatUser.map(scu => {
+                                                                if (scu.userId === message.authorId) {
+                                                                    return scu.username
+                                                                }
+                                                            })) : (message.authorId === user[0].userId) ? (user[0].username) : (selectedChatUser.username)
+                                                        }
+                                                    </p>
+
                                                     <p className='message_content' key={index}>{message.message}</p>
                                                 </div>
                                                 {
                                                     message.authorId === user[0].userId ?
-                                                        <img className='message_author_img' src={require(`../post_content/pictures/${message.author === user[0].userId ? user[0].userImage : selectedChatUser.userImage}`)} alt="" />
+                                                        <img className='message_author_img'
+                                                            src={require(`../post_content/pictures/${message.author === user[0].userId ? user[0].userImage : user[0].userImage}`)}
+                                                            alt="" />
                                                         : ''
                                                 }
                                             </div>
@@ -259,7 +292,7 @@ const Chat = () => {
 const Container = styled.div`
 .container {
     height: 570px;
-    padding: 40px 10px;
+    padding: 10px;
     width: 1380px;
     margin: auto;
     background: #BDBDBD;
@@ -279,7 +312,7 @@ const Container = styled.div`
 
 .contacts {
     width: 100%;
-    overflow: hidden;
+    overflow: auto;
     gap: 10px;
     display: flex;
     flex-direction: column;

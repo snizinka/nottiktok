@@ -42,7 +42,7 @@ export const setSocket = (socket: any) => {
     }
 }
 
-export const fetchChatMessages = (userID: number, secondUserID: number) => {
+export const fetchChatMessages = (userID: number, secondUserID: number, chatType: string) => {
     return async (dispatch: Dispatch<ChatAction>) => {
         try {
             dispatch({ type: ChatActionTypes.FETCH_MESSAGES })
@@ -54,7 +54,8 @@ export const fetchChatMessages = (userID: number, secondUserID: number) => {
                 },
                 body: JSON.stringify({
                     userID: userID,
-                    secondUserID: secondUserID
+                    secondUserID: secondUserID,
+                    chatType: chatType
                 })
             }).then(res => res.json())
                 .then(data => {

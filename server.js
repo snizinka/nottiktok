@@ -138,7 +138,7 @@ app.post('/contacts', async function (req, res) {
 })
 
 app.post('/chatmessages', async function (req, res) {
-    let data = await dbOperation.getChatMessages(req.body.userID, req.body.secondUserID).then(res => { return res })
+    let data = await dbOperation.getChatMessages(req.body.userID, req.body.secondUserID, req.body.chatType).then(res => { return res })
 
     res.send({ result: data })
 })
@@ -150,7 +150,7 @@ app.post('/files', async function (req, res) {
 })
 
 app.post('/searchcontacts', async function (req, res) {
-    let data = await dbOperation.searchContact(req.body.parameter).then(res => { return res })
+    let data = await dbOperation.searchContact(req.body.userId, req.body.parameter).then(res => { return res })
 
     res.send({ result: data })
 })
@@ -200,7 +200,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('edit_message', async (data) => {
-        let editData = await dbOperation.editMessage(data.messageId, data.message)
+        let editData = await dbOperation.editMessage(data)
         socket.to(data.room).emit('edit_message_state', { message: data.message,
             messageId: data.messageId,
             changedRows: editData.changedRows
@@ -208,8 +208,8 @@ io.on('connection', (socket) => {
     })
 
     socket.on('delete_message', async (data) => {
-        let deletedMessage = await dbOperation.deleteMessage(data.messageId)
-        socket.to(data.room).emit('deleted_message', {
+        let deletedMessage = await dbOperation.deleteMessage(data.room, data.messageId, data.chatType)
+        socket.to(data.room.contact.contactId).emit('deleted_message', {
             messageId: data.messageId,
             affectedRows: deletedMessage.affectedRows
         })

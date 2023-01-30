@@ -390,49 +390,74 @@ const getContacts = async (userID) => {
         contacts = []
     else {
         for (let i = 0; i < contacts.length; i++) {
-            if (contacts[i].fuserId !== userID)
-            {
+            if (contacts[i].fuserId !== userID) {
                 let oneUser = JSON.parse(JSON.stringify(await query(`SELECT userId, username, userLink, userImage FROM nottiktok.users WHERE userId = ${contacts[i].fuserId}`)));
-                sb.push({ contact: contacts[i], user: oneUser[0]})
+                sb.push({ contact: contacts[i], user: oneUser[0], chatType: 'PRIVATE' })
             }
-            else
-            {
+            else {
                 let oneUser = JSON.parse(JSON.stringify(await query(`SELECT userId, username, userLink, userImage FROM nottiktok.users WHERE userId = ${contacts[i].suserId}`)))
-                sb.push({ contact: contacts[i], user: oneUser })
+                sb.push({ contact: contacts[i], user: oneUser[0], chatType: 'PRIVATE' })
             }
         }
 
-        // for(let i = 0; i < groups.length; i++) {
-        //     sb.push({contact: { contactId: groups[i].chatId, chatName: groups[i].chatName} })
-        // }
+        for (let i = 0; i < groups.length; i++) {
+            let oneUser = JSON.parse(JSON.stringify(await query(`SELECT us.userId, us.username, us.userLink, us.userImage from nottiktok.contactlink as cl
+            LEFT JOIN nottiktok.users as us ON us.userId = cl.userId
+            WHERE cl.chatId = ${groups[i].chatId}`)))
+            sb.push({ contact: { contactId: groups[i].chatId, chatName: groups[i].chatName }, user: oneUser, chatType: 'GROUP' })
+        }
     }
 
     return { contacts, sb };
 }
 
 
-const getChatMessages = async (userID, secondUserID) => {
-    let messages = JSON.parse(JSON.stringify(await query(`SELECT * FROM nottiktok.messages as msg
-    WHERE (msg.authorId = ${userID} AND msg.receiver = ${secondUserID}) OR (msg.authorId = ${secondUserID} AND msg.receiver = ${userID}) 
-    ORDER BY msg.deliveryTime`)));
+const getChatMessages = async (userID, secondUserID, chatType) => {
+    let messages = {}
+
+    if (chatType === 'PRIVATE') {
+        messages = JSON.parse(JSON.stringify(await query(`SELECT * FROM nottiktok.messages as msg
+        WHERE (msg.authorId = ${userID} AND msg.receiver = ${secondUserID}) OR (msg.authorId = ${secondUserID} AND msg.receiver = ${userID}) 
+        ORDER BY msg.deliveryTime`)));
+    } else {
+        messages = JSON.parse(JSON.stringify(await query(`SELECT messageId, chatId, authorId, receiver, message, deliveryTime FROM nottiktok.groupmessages WHERE chatId = ${secondUserID}`)))
+    }
 
     return { messages: messages }
 }
 
 const addMessage = async (userID, secondUserID, messageData) => {
-    let message = await query(`INSERT INTO nottiktok.messages(authorId, receiver, message, deliveryTime) VALUES(${userID}, ${secondUserID}, '${messageData.message}', '2022.12.01')`)
-    console.log(message)
+    let message = {}
+
+    if (messageData.chatType === 'PRIVATE') {
+        message = await query(`INSERT INTO nottiktok.messages(authorId, receiver, message, deliveryTime) VALUES(${userID}, ${secondUserID}, '${messageData.message}', '2022.12.01')`)
+    } else {
+        message = await query(`INSERT INTO nottiktok.groupmessages(chatId, authorId, message, deliveryTime) VALUES(${messageData.room}, ${userID}, '${messageData.message}', '2022.12.01')`)
+    }
+
     return message;
 }
 
-const editMessage = async (messageId, message) => {
-    let messaged = await query(`UPDATE nottiktok.messages SET message = '${message}' WHERE messageId = ${messageId}`)
+const editMessage = async (data) => {
+    let messaged = {}
+
+    if (data.chatType === 'PRIVATE') {
+        messaged = await query(`UPDATE nottiktok.messages SET message = '${data.message}' WHERE messageId = ${data.messageId}`)
+    } else {
+        messaged = await query(`UPDATE nottiktok.groupmessages SET message = '${data.message}' WHERE messageId = ${data.messageId}`)
+    }
 
     return messaged;
 }
 
-const deleteMessage = async (messageId) => {
-    let deletedMessage = await query(`DELETE FROM nottiktok.messages WHERE messageId = ${messageId}`)
+const deleteMessage = async (room, messageId, chatType) => {
+    let deletedMessage = {}
+
+    if (chatType === 'PRIVATE') {
+        deletedMessage = await query(`DELETE FROM nottiktok.messages WHERE messageId = ${messageId}`)
+    } else {
+        deletedMessage = await query(`DELETE FROM nottiktok.groupmessages WHERE messageId = ${messageId} AND chatId = ${room.contact.contactId}`)
+    }
 
     return deletedMessage;
 }
@@ -442,9 +467,19 @@ const filesCopy = async (files) => {
     return "aaaa";
 }
 
-const searchContact = async (contact) => {
+const searchContact = async (userId, contact) => {
     let contacts = await query(`SELECT userId, username, userLink, userImage FROM nottiktok.users as u
     WHERE u.userLink LIKE '%${contact}%'`);
+
+    for (let i = 0; i < contacts.length; i++) {
+        let searchForExisting = await query(`SELECT fuserId, suserId FROM nottiktok.contacts 
+    WHERE (fuserId = ${userId} AND suserId = ${contacts[i].userId}) OR (fuserId = ${contacts[i].userId} AND suserId = ${userId})`);
+
+        if (searchForExisting.length > 0) {
+            const index = contacts.indexOf(i);
+            contacts.splice(index, 1);
+        }
+    }
 
     return { data: contacts };
 }

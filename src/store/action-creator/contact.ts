@@ -2,7 +2,7 @@ import axios from "axios";
 import { Dispatch } from "redux";
 import { ContactAction, ContactActionTypes } from "../../types/contact";
 
-export const searchContact = (parameter: string) => {
+export const searchContact = (userId: string, parameter: string) => {
     return async (dispatch: Dispatch<ContactAction>) => {
         try {
             dispatch({ type: ContactActionTypes.SEARCH_CONTACT })
@@ -13,7 +13,8 @@ export const searchContact = (parameter: string) => {
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
-                    parameter: parameter
+                    parameter: parameter,
+                    userId: userId
                 })
             }).then(res => res.json());
 
